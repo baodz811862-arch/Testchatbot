@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DIO Web Script Chatbot</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color: #1a1a1a;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .chat-container {
+            width: 100%;
+            max-width: 650px;
+            height: 85vh;
+            background-color: #242424;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .chat-header {
+            background-color: #2ecc71;
+            padding: 15px;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .message {
+            max-width: 85%;
+            padding: 12px 16px;
+            border-radius: 8px;
+            line-height: 1.4;
+            word-wrap: break-word;
+            font-size: 0.95rem;
+        }
+        .bot {
+            background-color: #2f2f2f;
+            align-self: flex-start;
+            border-left: 4px solid #2ecc71;
+            width: 100%;
+        }
+        .user {
+            background-color: #2ecc71;
+            color: #ffffff;
+            align-self: flex-end;
+        }
+        .game-title {
+            font-weight: bold;
+            color: #2ecc71;
+            margin-bottom: 8px;
+            font-size: 1.05rem;
+        }
+        .hub-container {
+            background-color: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 6px;
+            padding: 10px;
+            margin-top: 10px;
+        }
+        .hub-name {
+            color: #f1c40f;
+            font-weight: bold;
+            margin-bottom: 4px;
+            display: block;
+        }
+        .script-box {
+            background-color: #111111;
+            color: #00ff00;
+            font-family: 'Courier New', Courier, monospace;
+            padding: 10px;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            overflow-x: auto;
+            font-size: 0.85rem;
+            margin-bottom: 10px;
+            border-left: 3px solid #f1c40f;
+        }
+        .chat-input-area {
+            padding: 15px;
+            background-color: #1e1e1e;
+            display: flex;
+            gap: 10px;
+            border-top: 1px solid #2d2d2d;
+        }
+        .chat-input {
+            flex: 1;
+            background-color: #2d2d2d;
+            border: none;
+            padding: 12px;
+            color: #ffffff;
+            border-radius: 6px;
+            outline: none;
+            font-size: 1rem;
+        }
+        .chat-submit {
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+            padding: 0 22px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+        .chat-submit:hover {
+            background-color: #27ae60;
+        }
+    </style>
+</head>
+<body>
+
+<div class="chat-container">
+    <div class="chat-header">DIO WEB SCRIPT BOT</div>
+    <div class="chat-messages" id="chatMessages">
+        <div class="message bot">Xin chào! Hãy nhập tên game cần tìm mã script (Ví dụ: Adopt Me, Rivals, Blox Fruit...).</div>
+    </div>
+    <div class="chat-input-area">
+        <input type="text" id="chatInput" class="chat-input" placeholder="Nhập tên game..." autocomplete="off">
+        <button id="chatSubmit" class="chat-submit">Gửi</button>
+    </div>
+</div>
+
+<script>
+    const chatMessages = document.getElementById('chatMessages');
+    const chatInput = document.getElementById('chatInput');
+    const chatSubmit = document.getElementById('chatSubmit');
+
+    const GAMES_DATABASE = {
+        "adopt me": {
+            name: "Adopt Me",
+            scripts: {
+                "Axonic Hub": {
+                    mobile: `loadstring(game:HttpGet("https://raw.githubusercontent.com/Kenniel123/Slime-RNG/refs/heads/main/SlimeRNG"))()`
+                },
+                "Dead Hub": {
+                    mobile: `loadstring(game:HttpGet("https://raw.githubusercontent.com/DeadScripter/Deadhub/refs/heads/main/DeadLoader.lua"))()`
+                },
+                "Echo Hub": {
+                    mobile: `loadstring(game:HttpGet("https://vss.pandadevelopment.net/virtual/file/475911550cec4d6d"))()`
+                },
+                "JN Hub": {
+                    mobile: `loadstring(game:HttpGet("https://raw.githubusercontent.com/JNHHGaming/Slime-Rng/refs/heads/main/JN%20HH%20Gaming",true))()`
+                },
+                "Cryo Hub": {
+                    mobile: `loadstring(game:HttpGet("https://raw.githubusercontent.com/xlebaaa3-netizen/cryo/refs/heads/main/loader.luau"))()`
+                },
+                "PHANTOM Hub": {
+                    mobile: `loadstring(game:HttpGet("https://raw.githubusercontent.com/Dalkoski/Phantom/refs/heads/main/Loader"))()`
+                },
+                "Ajjans Hub": {
+                    mobile: `loadstring(game:HttpGet("https://api.luarmor.net/files/v4/loaders/359e97f8618e9008afe5f496184ebb7c.lua"))()`
+                },
+                "Ather Hub": {
+                    mobile: `loadstring(game:HttpGet("https://api.luarmor.net/files/v3/loaders/2529a5f9dfddd5523ca4e22f21cceffa.lua"))()`
+                }
+            }
+        }
+    };
+
+    function appendMessage(text, sender, isData = false, dataPayload = null) {
+        const msgDiv = document.createElement('div');
+        msgDiv.classList.add('message', sender);
+        
+        if (isData && dataPayload) {
+            let htmlContent = `<div class="game-title">🎮 CÁC HỆ THỐNG SCRIPT CHO: ${dataPayload.name.toUpperCase()}</div>`;
+            
+            for (const [hubName, hubContent] of Object.entries(dataPayload.scripts)) {
+                htmlContent += `
+                    <div class="hub-container">
+                        <span class="hub-name">🔥 ${hubName}</span>
+                        <div class="script-box">${hubContent.mobile}</div>
+                    </div>
+                `;
+            }
+            msgDiv.innerHTML = htmlContent;
+        } else {
+            msgDiv.innerText = text;
+        }
+        
+        chatMessages.appendChild(msgDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function handleSend() {
+        const query = chatInput.value.trim().toLowerCase();
+        if (!query) return;
+
+        appendMessage(chatInput.value, 'user');
+        chatInput.value = '';
+
+        setTimeout(() => {
+            let foundGameData = null;
+
+            for (const [gameKey, gameModule] of Object.entries(GAMES_DATABASE)) {
+                if (query.includes(gameKey) || gameKey.includes(query) || (gameModule.name && gameModule.name.toLowerCase().includes(query))) {
+                    foundGameData = gameModule;
+                    break;
+                }
+            }
+
+            if (foundGameData) {
+                appendMessage('', 'bot', true, foundGameData);
+            } else {
+                appendMessage("Không tìm thấy hệ thống script phù hợp với từ khóa này.", 'bot');
+            }
+        }, 300);
+    }
+
+    chatSubmit.addEventListener('click', handleSend);
+    chatInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') handleSend();
+    });
+</script>
+
+</body>
+</html>
